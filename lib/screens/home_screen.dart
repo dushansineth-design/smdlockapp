@@ -12,16 +12,9 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key, required this.user});
 
   final List<Door> doors = [
-    Door(name: "Front Door", activityLog: [
-      Activity(action: "Locked by You", time: "2 minutes ago", locked: true),
-      Activity(action: "Unlocked by You", time: "1 hour ago", locked: false),
-    ]),
-    Door(name: "Garage Door", activityLog: [
-      Activity(action: "Locked by You", time: "10 minutes ago", locked: true),
-    ]),
-    Door(name: "Back Door", activityLog: [
-      Activity(action: "Unlocked by You", time: "30 minutes ago", locked: false),
-    ]),
+    Door(name: "Front Door", activityLog: []),
+    Door(name: "Garage Door", activityLog: []),
+    Door(name: "Back Door", activityLog: []),
   ];
 
   @override
