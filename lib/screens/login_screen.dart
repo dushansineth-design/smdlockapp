@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import '../services/activity_service.dart'; // <- Use this
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() async {
     final userId = _userIdController.text.trim();
-    final password = _passwordController.text; // Keep raw password
+    final password = _passwordController.text.trim();
 
     if (userId.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -28,24 +28,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _loading = true);
+    final user = await AuthService.login(userId, password); // <- pass password
+    setState(() => _loading = false);
 
-    try {
-      final user = await AuthService.login('$userId:$password');
-      setState(() => _loading = false);
-
-      if (user != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userName', user.name);
-        context.go('/home', extra: user.name);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login failed")),
-        );
-      }
-    } catch (e) {
-      setState(() => _loading = false);
+    if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userName', user.name);
+      context.go('/home', extra: user.name);
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
+        const SnackBar(content: Text("Login failed: invalid username or password")),
       );
     }
   }
@@ -56,13 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.black,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 98, 96, 96).withAlpha(230),
                   borderRadius: BorderRadius.circular(20),
@@ -71,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       "Smart Door Lock",
                       style: TextStyle(
                         fontSize: 24,
@@ -79,11 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     TextField(
                       controller: _userIdController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
                         labelText: "Enter Username",
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
@@ -94,14 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
                         labelText: "Enter Password",
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
@@ -112,12 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     _loading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? CircularProgressIndicator(color: Colors.white)
                         : ElevatedButton(
                             onPressed: _login,
-                            child: const Text("Login"),
+                            child: Text("Login"),
                           ),
                   ],
                 ),
