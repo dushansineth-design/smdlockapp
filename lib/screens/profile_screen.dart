@@ -81,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
                     Center(
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          backgroundColor: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.8),
                           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                         ),

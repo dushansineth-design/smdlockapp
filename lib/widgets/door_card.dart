@@ -59,9 +59,9 @@ class _DoorCardState extends State<DoorCard> {
                   icon: widget.door.isLocked ? Icons.lock : Icons.lock_open,
                   onPressed: _toggleLock,
                   backgroundColor:
-                      widget.door.isLocked ? Colors.red : Colors.green,
+                      widget.door.isLocked ? const Color.fromARGB(255, 255, 17, 0) : const Color.fromARGB(255, 0, 255, 8),
                   glowColor:
-                      widget.door.isLocked ? Colors.redAccent : Colors.greenAccent,
+                      widget.door.isLocked ? const Color.fromARGB(255, 255, 0, 0) : const Color.fromARGB(255, 0, 255, 132),
                 ),
               ),
             ),
