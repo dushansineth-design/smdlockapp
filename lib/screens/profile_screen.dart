@@ -69,7 +69,7 @@ class ProfileScreen extends StatelessWidget {
                     ...doors.map((door) => ListTile(
                           leading: Icon(
                             door.isLocked ? Icons.lock : Icons.lock_open,
-                            color: door.isLocked ? Colors.green : Colors.yellow,
+                            color: door.isLocked ? Colors.red : Colors.green,
                           ),
                           title: Text(door.name, style: TextStyle(color: Colors.white)),
                           subtitle: Text(

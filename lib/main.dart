@@ -28,7 +28,7 @@ class SmartDoorLockApp extends StatelessWidget {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => LoginScreen(), // ✅ FIXED
+          builder: (context, state) => LoginScreen(), 
         ),
 
         GoRoute(

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../models/door.dart';
-import '../models/activity.dart';
+//import '../models/activity.dart';
 import '../widgets/door_card.dart';
 import '../screens/profile_screen.dart';
 

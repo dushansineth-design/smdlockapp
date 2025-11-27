@@ -3,9 +3,9 @@ import '../models/user.dart';
 class AuthService {
   // ✅ Step 1: Create a mock user database
   static final Map<String, String> _userDatabase = {
-    'user': '1234',
+    
     'admin': 'adminpass',
-    'guest': '0000',
+    
   };
 
   // ✅ Step 2: Validate ID and password
