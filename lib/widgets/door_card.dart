@@ -27,22 +27,71 @@ class _DoorCardState extends State<DoorCard> {
     );
   }
 
+  Color _getDoorColor(String doorName) {
+    switch (doorName) {
+      case "Main Door":
+        return Colors.blue;
+      case "Lab Door":
+        return Colors.green;
+      case "Cabin Door":
+        return Colors.orange;
+      default:
+        return Colors.purple;
+    }
+  }
+
+  Color _getSecondaryDoorColor(String doorName) {
+    switch (doorName) {
+      case "Main Door":
+        return Colors.blue.shade800;
+      case "Lab Door":
+        return Colors.green.shade800;
+      case "Cabin Door":
+        return Colors.orange.shade800;
+      default:
+        return Colors.purple.shade800;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.door.name,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        // Door name with gradient background
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                _getDoorColor(widget.door.name),
+                _getSecondaryDoorColor(widget.door.name),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: _getDoorColor(widget.door.name).withAlpha(100),
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Text(
+            widget.door.name,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
 
         SizedBox(height: 20),
 
+        // Custom button remains unchanged
         Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
