@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../models/door.dart';
@@ -26,27 +25,38 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Welcome section with white line below
+              Column(
                 children: [
-                  Text(
-                    "Welcome ${user.name}",
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.person, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProfileScreen(user: user, doors: doors),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Welcome ${user.name}",
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.person, color: Colors.white),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ProfileScreen(user: user, doors: doors),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  // White line divider
+                  SizedBox(height: 10),
+                  Container(
+                    height: 2,
+                    color: Colors.white,
                   ),
                 ],
               ),
