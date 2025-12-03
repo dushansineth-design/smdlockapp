@@ -1,11 +1,12 @@
+// lib/widgets/door_card.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../models/door.dart';
 import 'custom_button.dart';
+import '../services/api_service.dart';
 
 class DoorCard extends StatefulWidget {
   final Door door;
-
   const DoorCard({super.key, required this.door});
 
   @override
@@ -13,43 +14,47 @@ class DoorCard extends StatefulWidget {
 }
 
 class _DoorCardState extends State<DoorCard> {
-  void _toggleLock() {
-    setState(() {
-      widget.door.isLocked = !widget.door.isLocked;
-    });
+  bool sending = false;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "${widget.door.name} ${widget.door.isLocked ? "locked" : "unlocked"}",
-        ),
-      ),
-    );
+  Future<void> _toggleLock() async {
+    if (sending) return;
+    setState(() => sending = true);
+
+    final command = widget.door.isLocked ? "unlock" : "lock";
+    final ok = await ApiService.sendDoorCommand(doorId: widget.door.id, command: command);
+
+    setState(() => sending = false);
+
+    if (ok) {
+      setState(() {
+        widget.door.isLocked = !widget.door.isLocked;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.door.name} ${widget.door.isLocked ? "locked" : "unlocked"}")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Command failed. Check network/backend.")),
+      );
+    }
   }
 
   Color _getDoorColor(String doorName) {
     switch (doorName) {
-      case "Main Door":
-        return Colors.blue;
-      case "Lab Door":
-        return Colors.green;
-      case "Cabin Door":
-        return Colors.orange;
-      default:
-        return Colors.purple;
+      case "Main Door": return Colors.blue;
+      case "Lab Door": return Colors.green;
+      case "Cabin Door": return Colors.orange;
+      default: return Colors.purple;
     }
   }
 
   Color _getSecondaryDoorColor(String doorName) {
     switch (doorName) {
-      case "Main Door":
-        return Colors.blue.shade800;
-      case "Lab Door":
-        return Colors.green.shade800;
-      case "Cabin Door":
-        return Colors.orange.shade800;
-      default:
-        return Colors.purple.shade800;
+      case "Main Door": return Colors.blue.shade800;
+      case "Lab Door": return Colors.green.shade800;
+      case "Cabin Door": return Colors.orange.shade800;
+      default: return Colors.purple.shade800;
     }
   }
 
@@ -58,14 +63,11 @@ class _DoorCardState extends State<DoorCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Door name with gradient background
+        // Title
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                _getDoorColor(widget.door.name),
-                _getSecondaryDoorColor(widget.door.name),
-              ],
+              colors: [_getDoorColor(widget.door.name), _getSecondaryDoorColor(widget.door.name)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -74,24 +76,19 @@ class _DoorCardState extends State<DoorCard> {
               BoxShadow(
                 color: _getDoorColor(widget.door.name).withAlpha(100),
                 blurRadius: 8,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(
             widget.door.name,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
+        const SizedBox(height: 20),
 
-        SizedBox(height: 20),
-
-        // Custom button remains unchanged
+        // Button
         Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
@@ -104,20 +101,23 @@ class _DoorCardState extends State<DoorCard> {
                   border: Border.all(color: Colors.white.withAlpha(230)),
                 ),
                 child: CustomButton(
-                  text: widget.door.isLocked ? "Tap to Unlock" : "Tap to Lock",
+                  text: sending
+                      ? "Sending..."
+                      : widget.door.isLocked ? "Tap to Unlock" : "Tap to Lock",
                   icon: widget.door.isLocked ? Icons.lock : Icons.lock_open,
-                  onPressed: _toggleLock,
-                  backgroundColor:
-                      widget.door.isLocked ? const Color.fromARGB(255, 255, 17, 0) : const Color.fromARGB(255, 0, 255, 8),
-                  glowColor:
-                      widget.door.isLocked ? const Color.fromARGB(255, 255, 0, 0) : const Color.fromARGB(255, 0, 255, 132),
+                  onPressed: sending ? (){} : _toggleLock,
+                  backgroundColor: widget.door.isLocked
+                      ? const Color.fromARGB(255, 255, 17, 0)
+                      : const Color.fromARGB(255, 0, 255, 8),
+                  glowColor: widget.door.isLocked
+                      ? const Color.fromARGB(255, 255, 0, 0)
+                      : const Color.fromARGB(255, 0, 255, 132),
                 ),
               ),
             ),
           ),
         ),
-
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
       ],
     );
   }

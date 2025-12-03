@@ -12,49 +12,66 @@ import 'screens/profile_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-  final savedUserName = prefs.getString('userName');
 
-  runApp(SmartDoorLockApp(savedUserName: savedUserName));
+  final int? savedUserId = prefs.getInt('user_id');
+  final String? savedUserName = prefs.getString('user_name');
+  final String? savedUsername = prefs.getString('username');
+  final String? savedRole = prefs.getString('role');
+
+  User? savedUser;
+
+  if (savedUserId != null &&
+      savedUserName != null &&
+      savedUsername != null &&
+      savedRole != null) {
+    savedUser = User(
+      id: savedUserId,
+      name: savedUserName,
+      username: savedUsername,
+      role: savedRole,
+    );
+  }
+
+  runApp(SmartDoorLockApp(savedUser: savedUser));
 }
 
 class SmartDoorLockApp extends StatelessWidget {
-  final String? savedUserName;
-  const SmartDoorLockApp({super.key, this.savedUserName});
+  final User? savedUser;
+  const SmartDoorLockApp({super.key, this.savedUser});
 
   @override
   Widget build(BuildContext context) {
     final GoRouter router = GoRouter(
-      initialLocation: savedUserName != null ? '/home' : '/',
+      initialLocation: savedUser != null ? '/home' : '/',
       routes: [
+        // ✅ Login
         GoRoute(
           path: '/',
-          builder: (context, state) => LoginScreen(), 
+          builder: (context, state) => const LoginScreen(),
         ),
 
+        // ✅ Home
         GoRoute(
           path: '/home',
           builder: (context, state) {
-            final userName = state.extra is String
-                ? state.extra as String
-                : savedUserName ?? 'Guest';
+            final user = state.extra is User
+                ? state.extra as User
+                : savedUser!;
 
-            return HomeScreen(user: User(name: userName));
+            return HomeScreen(user: user);
           },
         ),
 
+        // ✅ Profile
         GoRoute(
           path: '/profile',
           builder: (context, state) {
-            final extra = state.extra is Map<String, dynamic>
-                ? state.extra as Map<String, dynamic>
-                : {};
+            final extra = state.extra as Map<String, dynamic>;
 
-            final user = extra['user'] as User? ??
-                User(name: savedUserName ?? 'Guest');
-
-            final doors = extra['doors'] as List<Door>? ?? [];
-
-            return ProfileScreen(user: user, doors: doors);
+            return ProfileScreen(
+              user: extra['user'] as User,
+              doors: extra['doors'] as List<Door>,
+            );
           },
         ),
       ],

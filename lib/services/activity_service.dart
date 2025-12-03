@@ -1,21 +1,35 @@
-import '../models/user.dart';
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import '../models/user.dart';
 
-class AuthService {
-  // ✅ Step 1: Create a mock user database
-  static final Map<String, String> _userDatabase = {
-    
-    'admin': 'adminpass',
-    
-  };
+// class AuthService {
+//   // ✅ Change this to your backend IP + port
+//   static const String _baseUrl = "http://192.168.1.100:5000";
 
-  // ✅ Step 2: Validate ID and password
-  static Future<User?> login(String userId, String password) async {
-    await Future.delayed(Duration(seconds: 1)); // simulate network delay
+//   static Future<User?> login(String username, String password) async {
+//     try {
+//       final response = await http.post(
+//         Uri.parse("$_baseUrl/api/login"),
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: jsonEncode({
+//           "username": username,
+//           "password": password,
+//         }),
+//       );
 
-    if (_userDatabase.containsKey(userId) && _userDatabase[userId] == password) {
-      return User(name: userId);
-    }
+//       // ✅ Login success
+//       if (response.statusCode == 200) {
+//         final Map<String, dynamic> data = jsonDecode(response.body);
+//         return User.fromJson(data);
+//       }
 
-    return null;
-  }
-}
+//       // ✅ Invalid username or password
+//       return null;
+//     } catch (e) {
+//       // ✅ Network / server error
+//       return null;
+//     }
+//   }
+// }

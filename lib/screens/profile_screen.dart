@@ -2,23 +2,28 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../models/door.dart';
-//import '../screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-
 
 class ProfileScreen extends StatelessWidget {
   final User user;
   final List<Door> doors;
 
-  const ProfileScreen({super.key, required this.user, required this.doors});
+  const ProfileScreen({
+    super.key,
+    required this.user,
+    required this.doors,
+  });
 
   void _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userName');
+    await prefs.clear();
+    await prefs.remove('user_id');
+    await prefs.remove('user_name');
+    await prefs.remove('username');
+    await prefs.remove('role');
     context.go('/');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -36,60 +41,67 @@ class ProfileScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.3)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () {
-                          context.pop(); // Go back
-                        },
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => context.pop(),
+                    ),
+                    const Text(
+                      "Profile",
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-
+                    const SizedBox(height: 8),
                     Text(
-                      "Profile",
-                      style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.bold),
+                      "Logged in as ${user.name}",
+                      style: const TextStyle(color: Colors.white70),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Logged in as: ${user.name}",
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
+                    const SizedBox(height: 30),
+                    const Text(
                       "Door Summary",
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                    SizedBox(height: 10),
-                    ...doors.map((door) => ListTile(
-                          leading: Icon(
-                            door.isLocked ? Icons.lock : Icons.lock_open,
-                            color: door.isLocked ? Colors.red : Colors.green,
-                          ),
-                          title: Text(door.name, style: TextStyle(color: Colors.white)),
-                          subtitle: Text(
-                            door.isLocked ? "Locked" : "Unlocked",
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                        )),
-                    Spacer(),
-                    Center(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.8),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    const SizedBox(height: 10),
+                    ...doors.map(
+                      (door) => ListTile(
+                        leading: Icon(
+                          door.isLocked ? Icons.lock : Icons.lock_open,
+                          color: door.isLocked ? Colors.red : Colors.green,
                         ),
-                        icon: Icon(Icons.logout, color: Colors.white),
-                        label: Text("Logout", style: TextStyle(color: Colors.white)),
-                        onPressed: () => _logout(context),
+                        title: Text(
+                          door.name,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          door.isLocked ? "Locked" : "Unlocked",
+                          style: const TextStyle(color: Colors.white70),
+                        ),
                       ),
                     ),
+                    const Spacer(),
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _logout(context),
+                        icon: const Icon(Icons.logout),
+                        label: const Text("Logout"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 14,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
