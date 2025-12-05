@@ -4,6 +4,7 @@ import '../models/user.dart';
 import '../models/door.dart';
 import '../widgets/door_card.dart';
 import '../screens/profile_screen.dart';
+import '../screens/logs_screen.dart';
 import '../services/api_service.dart';
 import 'dart:async';
 
@@ -96,19 +97,31 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.person, color: Colors.white),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ProfileScreen(user: widget.user, doors: doors),
-                                  ),
-                                ).then((_) {
-                                  // When coming back from profile, refresh doors
-                                  _loadDoors(silent: true);
-                                });
-                              },
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.history, color: Colors.white),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => const LogsScreen()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.person, color: Colors.white),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ProfileScreen(user: widget.user, doors: doors),
+                                      ),
+                                    ).then((_) {
+                                      _loadDoors(silent: true);
+                                    });
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),

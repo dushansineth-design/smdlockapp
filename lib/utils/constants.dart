@@ -12,4 +12,7 @@ class AppConstants {
 
   // ---------------- ADMIN / APP COMMAND ----------------
   static const String doorCommand = "$baseUrl/api/admin/door/command";
+
+  // ---------------- ACCESS LOGS ----------------
+  static const String logs = "$baseUrl/api/logs";
 }

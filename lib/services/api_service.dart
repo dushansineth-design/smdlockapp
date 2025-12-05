@@ -69,4 +69,18 @@ class ApiService {
       return false;
     }
   }
+
+
+  static Future<List<Map<String, dynamic>>> getLogs() async {
+    try {
+      final res = await http.get(Uri.parse(AppConstants.logs));
+      if (res.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(jsonDecode(res.body));
+      }
+      return [];
+    } catch (e) {
+      print("getLogs error: $e");
+      return [];
+    }
+  }
 }
